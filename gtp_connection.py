@@ -304,6 +304,7 @@ class GtpConnection:
         for point in emptyPoints:
             if self.board.is_legal(point, player):
                 legalPoints.append(format_point(point_to_coord(point, self.board.size)))
+        legalPoints = sorted(legalPoints)
         self.respond(' '.join(legalPoints))
         return
 
@@ -316,9 +317,10 @@ class GtpConnection:
             board_move = args[1]
             color = color_to_int(board_color)
             if args[1].lower() == "pass":
-                self.board.play_move(PASS, color)
-                self.board.current_player = opponent(color)
-                self.respond()
+                #self.board.play_move(PASS, color)
+                #self.board.current_player = opponent(color)
+                playedMove = '"' + board_color + " " + board_move + '"'
+                self.respond("illegal move: {} wrong coordinate".format(playedMove))
                 return
             coord = move_to_coord(args[1], self.board.size)
             move = coord_to_point(coord[0], coord[1], self.board.size)
