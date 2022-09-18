@@ -212,7 +212,7 @@ class GoBoard(object):
 
     def _detect_and_process_capture(self, nb_point: GO_POINT) -> GO_POINT:
         """
-        Check whether opponent block on nb_point is captured.
+        Check whether opponent block on neighbour point (nb_point) is captured.
         If yes, remove the stones.
         Returns the stone if only a single stone was captured,
         and returns NO_POINT otherwise.
@@ -226,6 +226,11 @@ class GoBoard(object):
             if len(captures) == 1:
                 single_capture = nb_point
         return single_capture
+
+    def detect_capture(self, nb_point: GO_POINT) ->bool:
+        opp_block = self._block_of(nb_point)
+        if not self._has_liberty(opp_block):
+            return True
 
     def play_move(self, point: GO_POINT, color: GO_COLOR) -> bool:
         """
@@ -250,9 +255,11 @@ class GoBoard(object):
         neighbors = self._neighbors(point)
         for nb in neighbors:
             if self.board[nb] == opp_color:
-                single_capture = self._detect_and_process_capture(nb)
+                if self.detect_capture(nb):
+                    return False
+                """single_capture = self._detect_and_process_capture(nb)
                 if single_capture != NO_POINT:
-                    single_captures.append(single_capture)
+                    single_captures.append(single_capture)"""
         block = self._block_of(point)
         if not self._has_liberty(block):  # undo suicide move
             self.board[point] = EMPTY

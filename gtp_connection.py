@@ -283,15 +283,15 @@ class GtpConnection:
     def gogui_rules_final_result_cmd(self, args):
         """ Implement this function for Assignment 1 """
         emptyPoints = self.board.get_empty_points()
-        player = self.board.current_player
+        color = self.board.current_player
         legalPoints = []
 
         for point in emptyPoints:
-            if self.board.is_legal(point, player):
+            if self.board.is_legal(point, color):
                 legalPoints.append(format_point(point_to_coord(point, self.board.size)))
-        if not legalPoints and player == 1:
+        if not legalPoints and color == 1:
             self.respond("white")
-        elif not legalPoints and player == 2:
+        elif not legalPoints and color == 2:
             self.respond("black")
         else:
             self.respond("unknown")
@@ -299,13 +299,14 @@ class GtpConnection:
     def gogui_rules_legal_moves_cmd(self, args):
         """ Implement this function for Assignment 1 """
         emptyPoints = self.board.get_empty_points()
-        player = self.board.current_player
-        legalPoints = []
+        color = self.board.current_player
+        legalMoves = []
+
         for point in emptyPoints:
-            if self.board.is_legal(point, player):
-                legalPoints.append(format_point(point_to_coord(point, self.board.size)))
-        legalPoints = sorted(legalPoints)
-        self.respond(' '.join(legalPoints))
+            if self.board.is_legal(point, color):
+                legalMoves.append(format_point(point_to_coord(point, self.board.size)))
+        legalMoves = sorted(legalMoves)
+        self.respond(' '.join(legalMoves))
         return
 
     def play_cmd(self, args: List[str]) -> None:
@@ -324,8 +325,18 @@ class GtpConnection:
                 return
             coord = move_to_coord(args[1], self.board.size)
             move = coord_to_point(coord[0], coord[1], self.board.size)
+            """
+            i = move_to_coord(board_move, self.board.size)
+            x = i[0]
+            y = i[1]
+            initialNeighbors = tempBoard.neighbors_of_color(move, oppColor)
+            tempBoard.play_move(coord_to_point(x, y, self.board.size), color)
+            finalNeighbors = tempBoard.neighbors_of_color(move, oppColor)
+
+            if len(initialNeighbors) != len(finalNeighbors):
+                self.respond("illegal move: " + '"{} {}" capture'.format(args[0], args[1]))"""
             if not self.board.play_move(move, color):
-                self.respond("Illegal Move: {}".format(board_move))
+                self.respond("illegal move: " + '"{} {}" capture'.format(args[0], args[1]))
                 return
             else:
                 self.debug_msg(
