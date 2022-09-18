@@ -18,7 +18,7 @@ class GoEngine:
         name : name of the player used by the GTP interface
         version : version number used by the GTP interface
         """
-        #get the empty points of this board
+        """#get the empty points of this board
         emptyPoints = board.get_empty_points()
 
         #if there are empty points...
@@ -26,5 +26,5 @@ class GoEngine:
             #return the first point in that list
             return emptyPoints[0]
         else:
-            return NO_POINT
+            return NO_POINT"""
         
